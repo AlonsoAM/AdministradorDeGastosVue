@@ -1,7 +1,11 @@
 <script setup></script>
 
 <template>
-  <h1>Template</h1>
+  <div>
+    <header>
+      <h1>Planificador de Gastos</h1>
+    </header>
+  </div>
 </template>
 
-<style scoped></style>
+<style></style>
