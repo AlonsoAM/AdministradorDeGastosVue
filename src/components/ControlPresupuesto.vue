@@ -1,5 +1,15 @@
 <script setup>
 import imagen from "../assets/img/grafico.jpg";
+const props = defineProps({
+  presupuesto: {
+    type: Number,
+    required: true,
+  },
+  disponible: {
+    type: Number,
+    required: true,
+  },
+});
 </script>
 <template>
   <div class="dos-columnas">
@@ -8,8 +18,8 @@ import imagen from "../assets/img/grafico.jpg";
     </div>
     <div class="contenedor-presupuesto">
       <button class="reset-app">Resetear app</button>
-      <p><span>Presupuesto:</span> S/0.00</p>
-      <p><span>Disponible:</span> S/0.00</p>
+      <p><span>Presupuesto:</span> S/{{ presupuesto }}</p>
+      <p><span>Disponible:</span> S/ {{ disponible }}</p>
       <p><span>Gastado:</span> S/0.00</p>
     </div>
   </div>
