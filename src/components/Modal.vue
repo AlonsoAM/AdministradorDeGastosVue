@@ -1,6 +1,13 @@
 <script setup>
 import iconoCerrar from "../assets/img/cerrar.svg";
 const emit = defineEmits(["ocultar-modal"]);
+
+const props = defineProps({
+  modal: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
 <template>
   <div class="modal">
@@ -11,7 +18,10 @@ const emit = defineEmits(["ocultar-modal"]);
         @click="$emit('ocultar-modal')"
       />
     </div>
-    <div class="contenedor">
+    <div
+      class="contenedor contenedor-formulario"
+      :class="[modal.animar ? 'animar' : 'cerrar']"
+    >
       <!-- Aquí va el formulario -->
       <form class="nuevo-gasto">
         <legend>Añadir Gasto</legend>
@@ -70,6 +80,21 @@ const emit = defineEmits(["ocultar-modal"]);
   cursor: pointer;
 }
 
+.contenedor-formulario {
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in;
+  opacity: 0;
+}
+
+.contenedor-formulario.animar {
+  opacity: 1;
+}
+
+.contenedor-formulario.cerrar {
+  opacity: 0;
+}
+
 .nuevo-gasto {
   margin: 10rem auto 0 auto;
   display: grid;
@@ -82,6 +107,7 @@ const emit = defineEmits(["ocultar-modal"]);
   font-size: 3rem;
   font-weight: 700;
 }
+
 .campo {
   display: grid;
   gap: 2rem;
