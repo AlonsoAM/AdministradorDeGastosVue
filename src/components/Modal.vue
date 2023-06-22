@@ -13,7 +13,7 @@ const emit = defineEmits(["ocultar-modal"]);
     </div>
     <div class="contenedor">
       <!-- Aquí va el formulario -->
-      <form>
+      <form class="nuevo-gasto">
         <legend>Añadir Gasto</legend>
         <div class="campo">
           <label for="nombre">Nombre Gasto:</label>
@@ -67,6 +67,43 @@ const emit = defineEmits(["ocultar-modal"]);
 }
 .cerrar-modal img {
   width: 3rem;
+  cursor: pointer;
+}
+
+.nuevo-gasto {
+  margin: 10rem auto 0 auto;
+  display: grid;
+  gap: 2rem;
+}
+
+.nuevo-gasto legend {
+  text-align: center;
+  color: var(--blanco);
+  font-size: 3rem;
+  font-weight: 700;
+}
+.campo {
+  display: grid;
+  gap: 2rem;
+}
+
+.nuevo-gasto input,
+.nuevo-gasto select {
+  background-color: var(--gris-claro);
+  border-radius: 1rem;
+  padding: 1rem;
+  border: none;
+  font-size: 2.2rem;
+}
+.nuevo-gasto label {
+  color: var(--blanco);
+  font-size: 3rem;
+}
+
+.nuevo-gasto input[type="submit"] {
+  background-color: var(--azul);
+  color: var(--blanco);
+  font-weight: 700;
   cursor: pointer;
 }
 </style>
