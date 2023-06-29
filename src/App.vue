@@ -32,18 +32,11 @@ watch(
     );
 
     gastado.value = totalGastado;
+    disponible.value = presupuesto.value - gastado.value;
   },
   {
     deep: true,
   }
-);
-
-watch(
-  gastado,
-  () => {
-    disponible.value = presupuesto.value - gastado.value;
-  },
-  { deep: true }
 );
 
 const definiPresupuesto = (cantidad) => {
