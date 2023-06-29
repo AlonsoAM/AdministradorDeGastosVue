@@ -4,6 +4,7 @@ import Presupuesto from "./components/Presupuesto.vue";
 import ControlPresupuesto from "./components/ControlPresupuesto.vue";
 import iconoNuevoGasto from "./assets/img/nuevo-gasto.svg";
 import Modal from "./components/Modal.vue";
+import { generarID } from "./helpers";
 const modal = reactive({
   mostrar: false,
   animar: false,
@@ -17,6 +18,7 @@ const gasto = reactive({
   id: null,
   fecha: Date.now(),
 });
+const gastos = ref([]);
 const definiPresupuesto = (cantidad) => {
   presupuesto.value = cantidad;
   disponible.value = cantidad;
@@ -34,6 +36,13 @@ const ocultarModal = () => {
   setTimeout(() => {
     modal.mostrar = false;
   }, 300);
+};
+
+const guardarGasto = () => {
+  gastos.value.push({
+    ...gasto,
+    id: generarID(),
+  });
 };
 </script>
 
@@ -64,6 +73,7 @@ const ocultarModal = () => {
       <Modal
         v-if="modal.mostrar"
         @ocultar-modal="ocultarModal"
+        @guardar-gasto="guardarGasto"
         :modal="modal"
         v-model:nombre="gasto.nombre"
         v-model:cantidad="gasto.cantidad"
