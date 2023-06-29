@@ -39,6 +39,29 @@ watch(
   }
 );
 
+watch(
+  modal,
+  () => {
+    if (!modal.mostrar) {
+      reiniciarStateGasto();
+    }
+  },
+  {
+    deep: true,
+  }
+);
+
+const reiniciarStateGasto = () => {
+  // Reiniciar el objeto
+  Object.assign(gasto, {
+    nombre: "",
+    cantidad: "",
+    categoria: "",
+    id: null,
+    fecha: Date.now(),
+  });
+};
+
 const definiPresupuesto = (cantidad) => {
   presupuesto.value = cantidad;
   disponible.value = cantidad;
@@ -64,15 +87,7 @@ const guardarGasto = () => {
     id: generarID(),
   });
   ocultarModal();
-
-  // Reiniciar el objeto
-  Object.assign(gasto, {
-    nombre: "",
-    cantidad: "",
-    categoria: "",
-    id: null,
-    fecha: Date.now(),
-  });
+  reiniciarStateGasto();
 };
 
 const seleccionarGasto = (id) => {
