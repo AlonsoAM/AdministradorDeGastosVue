@@ -6,6 +6,7 @@ import Gasto from "./components/Gasto.vue";
 import iconoNuevoGasto from "./assets/img/nuevo-gasto.svg";
 import Modal from "./components/Modal.vue";
 import { generarID } from "./helpers";
+import Swal from "sweetalert2";
 
 const modal = reactive({
   mostrar: false,
@@ -105,6 +106,26 @@ const seleccionarGasto = (id) => {
   Object.assign(gasto, gastoEditar);
   mostrarModal();
 };
+
+const eliminarGasto = (id) => {
+  // console.log("Eliminando: ", id);
+  Swal.fire({
+    title: "Está seguro?",
+    text: "La selección es irreversible, se eliminará el gasto!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si, borrar!",
+    cancelButtonText: "Cancelar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      gastos.value = gastos.value.filter((gasto) => gasto.id !== id);
+      ocultarModal();
+      Swal.fire("Eliminado!", "El gasto se ha eliminado con éxito!", "success");
+    }
+  });
+};
 </script>
 
 <template>
@@ -146,6 +167,7 @@ const seleccionarGasto = (id) => {
         v-if="modal.mostrar"
         @ocultar-modal="ocultarModal"
         @guardar-gasto="guardarGasto"
+        @eliminar-gasto="eliminarGasto"
         :modal="modal"
         :disponible="disponible"
         :id="gasto.id"

@@ -11,6 +11,7 @@ const emit = defineEmits([
   "update:nombre",
   "update:cantidad",
   "update:categoria",
+  "eliminar-gasto",
 ]);
 
 const props = defineProps({
@@ -141,7 +142,12 @@ const agregarGasto = () => {
         </div>
         <input type="submit" :value="id ? 'Editar Gasto' : 'Añadir Gasto'" />
       </form>
-      <button v-if="id" type="button" class="btn-eliminar">
+      <button
+        v-if="id"
+        @click="$emit('eliminar-gasto', id)"
+        type="button"
+        class="btn-eliminar"
+      >
         Eliminar Gasto
       </button>
     </div>
@@ -228,7 +234,7 @@ const agregarGasto = () => {
   font-weight: 700;
   font-size: 2rem;
   color: var(--blanco);
-  margin-top: 10rem;
+  margin-top: 5rem;
   cursor: pointer;
   border: none;
   border-radius: 10px;
