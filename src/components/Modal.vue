@@ -11,6 +11,7 @@ const emit = defineEmits([
   "update:nombre",
   "update:cantidad",
   "update:categoria",
+  "eliminar-gasto",
 ]);
 
 const props = defineProps({
@@ -30,11 +31,21 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  disponible: {
+    type: Number,
+    required: true,
+  },
+  id: {
+    type: [String, null],
+    required: true,
+  },
 });
+
+const old = props.cantidad;
 
 const agregarGasto = () => {
   // Validar que no haya campos vacíos
-  const { cantidad, nombre, categoria } = props;
+  const { cantidad, nombre, categoria, disponible, id } = props;
   if ([cantidad, nombre, categoria].includes("")) {
     error.value = "Todos los campos son obligatorios";
     setTimeout(() => {
@@ -50,6 +61,27 @@ const agregarGasto = () => {
     }, 3000);
     return;
   }
+
+  // Validar que usuario no gaste más de lo disponible
+  if (id) {
+    // Tomar en cuenta el gasto ya realizado
+    if (cantidad > old + disponible) {
+      error.value = "Has excedido el presupuesto disponible";
+      setTimeout(() => {
+        error.value = "";
+      }, 3000);
+      return;
+    }
+  } else {
+    if (cantidad > disponible) {
+      error.value = "Has excedido el presupuesto disponible";
+      setTimeout(() => {
+        error.value = "";
+      }, 3000);
+      return;
+    }
+  }
+
   // Si todo está bien, agregar el gasto
   emit("guardar-gasto");
 };
@@ -69,7 +101,7 @@ const agregarGasto = () => {
     >
       <!-- Aquí va el formulario -->
       <form class="nuevo-gasto" @submit.prevent="agregarGasto">
-        <legend>Añadir Gasto</legend>
+        <legend>{{ id ? "Editar Gasto" : "Añadir Gasto" }}</legend>
         <Alerta v-if="error">{{ error }}</Alerta>
         <div class="campo">
           <label for="nombre">Nombre Gasto:</label>
@@ -108,8 +140,16 @@ const agregarGasto = () => {
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value="Añadir Gasto" />
+        <input type="submit" :value="id ? 'Editar Gasto' : 'Añadir Gasto'" />
       </form>
+      <button
+        v-if="id"
+        @click="$emit('eliminar-gasto', id)"
+        type="button"
+        class="btn-eliminar"
+      >
+        Eliminar Gasto
+      </button>
     </div>
   </div>
 </template>
@@ -185,5 +225,18 @@ const agregarGasto = () => {
   color: var(--blanco);
   font-weight: 700;
   cursor: pointer;
+}
+
+.btn-eliminar {
+  padding: 1rem;
+  width: 100%;
+  background-color: #ef4444;
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--blanco);
+  margin-top: 5rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
 }
 </style>
