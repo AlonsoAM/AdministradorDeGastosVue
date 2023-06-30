@@ -100,7 +100,7 @@ const agregarGasto = () => {
     >
       <!-- Aquí va el formulario -->
       <form class="nuevo-gasto" @submit.prevent="agregarGasto">
-        <legend>Añadir Gasto</legend>
+        <legend>{{ id ? "Editar Gasto" : "Añadir Gasto" }}</legend>
         <Alerta v-if="error">{{ error }}</Alerta>
         <div class="campo">
           <label for="nombre">Nombre Gasto:</label>
@@ -139,8 +139,11 @@ const agregarGasto = () => {
             <option value="suscripciones">Suscripciones</option>
           </select>
         </div>
-        <input type="submit" value="Añadir Gasto" />
+        <input type="submit" :value="id ? 'Editar Gasto' : 'Añadir Gasto'" />
       </form>
+      <button v-if="id" type="button" class="btn-eliminar">
+        Eliminar Gasto
+      </button>
     </div>
   </div>
 </template>
@@ -216,5 +219,18 @@ const agregarGasto = () => {
   color: var(--blanco);
   font-weight: 700;
   cursor: pointer;
+}
+
+.btn-eliminar {
+  padding: 1rem;
+  width: 100%;
+  background-color: #ef4444;
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--blanco);
+  margin-top: 10rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
 }
 </style>
