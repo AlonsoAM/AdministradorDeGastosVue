@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, computed } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import Presupuesto from "./components/Presupuesto.vue";
 import ControlPresupuesto from "./components/ControlPresupuesto.vue";
 import Gasto from "./components/Gasto.vue";
@@ -37,6 +37,8 @@ watch(
 
     gastado.value = totalGastado;
     disponible.value = presupuesto.value - gastado.value;
+
+    localStorage.setItem("gastos", JSON.stringify(gastos.value));
   },
   {
     deep: true,
@@ -54,6 +56,23 @@ watch(
     deep: true,
   }
 );
+
+watch(presupuesto, () => {
+  localStorage.setItem("presupuesto", presupuesto.value);
+});
+
+onMounted(() => {
+  const presupuestoLS = localStorage.getItem("presupuesto");
+  const gastosLS = localStorage.getItem("gastos");
+  if (presupuestoLS && gastosLS) {
+    presupuesto.value = Number(presupuestoLS);
+    disponible.value = presupuesto.value;
+    gastos.value = JSON.parse(gastosLS);
+  } else {
+    localStorage.setItem("presupuesto", presupuesto.value);
+    localStorage.setItem("gastos", JSON.stringify(gastos.value));
+  }
+});
 
 const reiniciarStateGasto = () => {
   // Reiniciar el objeto
