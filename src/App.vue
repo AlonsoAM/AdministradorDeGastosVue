@@ -155,6 +155,30 @@ const gastosFiltrados = computed(() => {
   }
   return gastos.value;
 });
+
+const resetApp = () => {
+  Swal.fire({
+    title: "Está seguro?",
+    text: "Desea reiniciar Presupuesto y Gastos?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si!",
+    cancelButtonText: "No!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      presupuesto.value = 0;
+      disponible.value = 0;
+      gastos.value = [];
+      Swal.fire(
+        "Actualizado!",
+        "La apliación se ha reseteado con éxito",
+        "success"
+      );
+    }
+  });
+};
 </script>
 
 <template>
@@ -171,6 +195,7 @@ const gastosFiltrados = computed(() => {
           :presupuesto="presupuesto"
           :disponible="disponible"
           :gastado="gastado"
+          @reset-app="resetApp"
         />
       </div>
     </header>
