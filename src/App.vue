@@ -1,8 +1,9 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, computed, onMounted } from "vue";
 import Presupuesto from "./components/Presupuesto.vue";
 import ControlPresupuesto from "./components/ControlPresupuesto.vue";
 import Gasto from "./components/Gasto.vue";
+import Filtros from "./components/Filtros.vue";
 import iconoNuevoGasto from "./assets/img/nuevo-gasto.svg";
 import Modal from "./components/Modal.vue";
 import { generarID } from "./helpers";
@@ -15,6 +16,8 @@ const modal = reactive({
 const presupuesto = ref(0);
 const disponible = ref(0);
 const gastado = ref(0);
+const filtro = ref("");
+
 const gasto = reactive({
   nombre: "",
   cantidad: "",
@@ -34,6 +37,8 @@ watch(
 
     gastado.value = totalGastado;
     disponible.value = presupuesto.value - gastado.value;
+
+    localStorage.setItem("gastos", JSON.stringify(gastos.value));
   },
   {
     deep: true,
@@ -51,6 +56,23 @@ watch(
     deep: true,
   }
 );
+
+watch(presupuesto, () => {
+  localStorage.setItem("presupuesto", presupuesto.value);
+});
+
+onMounted(() => {
+  const presupuestoLS = localStorage.getItem("presupuesto");
+  const gastosLS = localStorage.getItem("gastos");
+  if (presupuestoLS && gastosLS) {
+    presupuesto.value = Number(presupuestoLS);
+    disponible.value = presupuesto.value;
+    gastos.value = JSON.parse(gastosLS);
+  } else {
+    localStorage.setItem("presupuesto", presupuesto.value);
+    localStorage.setItem("gastos", JSON.stringify(gastos.value));
+  }
+});
 
 const reiniciarStateGasto = () => {
   // Reiniciar el objeto
@@ -126,6 +148,37 @@ const eliminarGasto = (id) => {
     }
   });
 };
+
+const gastosFiltrados = computed(() => {
+  if (filtro.value) {
+    return gastos.value.filter((gasto) => gasto.categoria === filtro.value);
+  }
+  return gastos.value;
+});
+
+const resetApp = () => {
+  Swal.fire({
+    title: "Está seguro?",
+    text: "Desea reiniciar Presupuesto y Gastos?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Si!",
+    cancelButtonText: "No!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      presupuesto.value = 0;
+      disponible.value = 0;
+      gastos.value = [];
+      Swal.fire(
+        "Actualizado!",
+        "La apliación se ha reseteado con éxito",
+        "success"
+      );
+    }
+  });
+};
 </script>
 
 <template>
@@ -142,14 +195,18 @@ const eliminarGasto = (id) => {
           :presupuesto="presupuesto"
           :disponible="disponible"
           :gastado="gastado"
+          @reset-app="resetApp"
         />
       </div>
     </header>
     <main v-if="presupuesto > 0">
+      <Filtros v-model:filtro="filtro" />
       <div class="listado-gastos contenedor">
-        <h2>{{ gastos.length > 0 ? "Gastos" : "No hay gastos aún" }}</h2>
+        <h2>
+          {{ gastosFiltrados.length > 0 ? "Gastos" : "No hay gastos aún" }}
+        </h2>
         <Gasto
-          v-for="gasto in gastos"
+          v-for="gasto in gastosFiltrados"
           :key="gasto.id"
           :gasto="gasto"
           @seleccionar-gasto="seleccionarGasto"
